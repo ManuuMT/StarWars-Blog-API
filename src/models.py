@@ -8,6 +8,7 @@ class User(db.Model):
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
     fav_planet = db.relationship('Planet')
+    fav_char = db.relationship('Character')
     
     def __repr__(self):
          return f"{self.username}"
@@ -33,4 +34,23 @@ class Planet(db.Model):
         return {
             "id": self.id,
             "name": self.name
+        }
+
+
+class Character(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), nullable=False)
+    affiliations = db.Column(db.String(30), nullable=True)
+    #location = db.Column(db.Integer, db.ForeignKey('planet.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return '<Character %r>' % self.name
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "affiliations": self.affiliations
+            #"location": self.location,
         }
