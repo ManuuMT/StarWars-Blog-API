@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Planet
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -41,6 +41,20 @@ def get_all_users():
 def get_just_one_user(user_id):
     user = User.query.get(user_id)
     return jsonify(user.serialize()), 200
+
+
+@app.route('/planet', methods=['GET'])
+def get_all_planet():
+    planet_query = Planet.query.all()
+    all_planet = list(map(lambda x: x.serialize(), planet_query))
+    return jsonify(all_planet), 200
+
+@app.route('/planet/<int:planet_id>', methods=['GET'])
+def get_just_one_planet(planet_id):
+    planet = Planet.query.get(planet_id)
+    return jsonify(planet.serialize()), 200
+
+    
     
 
 # this only runs if `$ python src/main.py` is executed
