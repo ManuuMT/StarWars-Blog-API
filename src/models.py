@@ -18,9 +18,14 @@ class User(db.Model):
             "id": self.id,
             "username": self.username,
             "active": self.is_active, 
-            "fav_planet": list(map(lambda x: x.serialize(), self.fav_planet))
+            "fav_planet": list(map(lambda x: x.serialize(), self.fav_planet)),
+            "fav_char": list(map(lambda x: x.serialize(), self.fav_char))
         }
 
+    @classmethod
+    def get_user(cls, id):
+        user = cls.query.get(id)
+        return user
 
 class Planet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
