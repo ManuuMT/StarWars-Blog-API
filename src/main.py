@@ -54,9 +54,8 @@ def get_all_planet():
 @app.route('/user/<int:user_id>/favorites', methods=['GET'])
 def get_user_favourites(user_id):
     my_user = User.get_user(user_id)
-    #favs = my_user["fav_char"]
-    return jsonify(my_user), 200
-
+    favs = list(map(lambda x: x.serialize(), my_user.fav_planet))
+    return jsonify(favs), 200
 
 @app.route('/planet/<int:planet_id>', methods=['GET'])
 def get_just_one_planet(planet_id):
