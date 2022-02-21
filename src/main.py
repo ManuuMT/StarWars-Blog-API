@@ -44,18 +44,37 @@ def get_just_one_user(user_id):
     user = User.query.get(user_id)
     return jsonify(user.serialize()), 200
 
-
 @app.route('/planet', methods=['GET'])
 def get_all_planet():
     planet_query = Planet.query.all()
     all_planet = list(map(lambda x: x.serialize(), planet_query))
     return jsonify(all_planet), 200
 
+#create new planet
+#{ 'name': 'new_planet'}
+@app.route('/planet', methods=['POST'])
+def create_planet():
+    # First we get the payload json
+    body = request.get_json()
+
+    if body is None:
+        raise APIException("You need to specify the request body as a json object", status_code=400)
+    if 'name' not in body:
+        raise APIException('You need to specify the name of the planet', status_code=400)
+        
+    # at this point, all data has been validated, we can proceed to inster into the bd
+    new_planet = Planet(name=body['name'])
+    db.session.add(new_planet)
+    db.session.commit()
+    return "Planet created successfully ;) ", 200
+
+
 @app.route('/user/<int:user_id>/favorites', methods=['GET'])
 def get_user_favourites(user_id):
     my_user = User.get_user(user_id)
     favs = list(map(lambda x: x.serialize(), my_user.fav_planet))
     return jsonify(favs), 200
+
 
 @app.route('/planet/<int:planet_id>', methods=['GET'])
 def get_just_one_planet(planet_id):
